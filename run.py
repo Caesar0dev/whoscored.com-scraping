@@ -37,5 +37,5 @@ print("home team number >>> ", homeTeamNumbers)
 
 # print("------->", elements_box)
 
-# time.sleep(6)
-# driver.quit()
+time.sleep(6)
+driver.quit()

@@ -122,7 +122,6 @@ class WhoScoredScraper:
                     # away_formation = page.find('div', attrs={'class': 'match-centre-header-team', 'data-field': 'away'}).find('div', attrs={'class': 'formation'}).text.strip()
                     # home_link = self.BASE_URL + page.find('div', attrs={'class': 'match-centre-header-team', 'data-field': 'home'}).find('a', attrs={'class': 'team-name'})['href']
                     # away_link = self.BASE_URL + page.find('div', attrs={'class': 'match-centre-header-team', 'data-field': 'away'}).find('a', attrs={'class': 'team-name'})['href']
-
                     
                     # Dive to Grab More Data in LiveStatistics
                     self.driver.get(link.replace('/Live/', '/LiveStatistics/'))
@@ -163,7 +162,6 @@ class WhoScoredScraper:
                     }
         # Return Data Result
         return data
-
 
     def get_valid_links(self, page):
         print("get_valid_links function started >>>>>>>>>>>>>>>>")
