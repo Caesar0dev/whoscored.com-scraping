@@ -90,6 +90,7 @@ class WhoScoredScraper:
                     match_name = ' '.join([home_team, score, away_team])
                     home_team_table = page.find('div', attrs={'id': 'live-player-home-stats'}).findAll('td', attrs={
                         'class': 'col12-lg-2 col12-m-3 col12-s-4 col12-xs-5 grid-abs overflow-text'})
+                    print("home team table >>>>>>>>>>>>>> ", home_team_table)
                     away_team_table = page.find('div', attrs={'id': 'live-player-away-stats'}).findAll('td', attrs={
                         'class': 'col12-lg-2 col12-m-3 col12-s-4 col12-xs-5 grid-abs overflow-text'})
                     home_team_players = self.get_players(home_team_table)
@@ -137,6 +138,7 @@ class WhoScoredScraper:
                 match_day = now.strftime("%a, %b %d %Y")
             # Put match_day as a Key of Links Data
             data[match_day] = self.get_valid_links(Soup(self.driver.page_source, 'html.parser'))
+            print("data[", match_day, "] >>>>>>>>> ", data[match_day])
 
             if i < days:
                 # Iterate to the previous day
@@ -152,10 +154,12 @@ class WhoScoredScraper:
         links = list(map(lambda x: self.BASE_URL + x["href"], page.select('div[class *= "Match-module_scores"] a'))
                      # Check Leagues
                      for league in self.LEAGUES)
+        print("links >>>>>>>>>>>>>>>>>>>>>> ", links)
         for league in self.LEAGUES:
             filtered_links = [link for link in links if league in link]
             if filtered_links:
                 result[league] = filtered_links
+                print("get_links result[", league, "] >>>>>>>>>>>> ", result[league])
         return result
 
     def remove_alert(self, remove=False, sleep=0):
@@ -195,24 +199,23 @@ class WhoScoredScraper:
                                 team_link = details['Team Link']
                                 for p in data[match_day][league][key][team][player]["Players"]:
                                     # Append Data
-                                    results.append([league, match_day, team, p[0], p[1], team_formation, team_link,
-                                                    time.strftime("%x %r")])
+                                    results.append([match_day, team, p[0], p[1]])
                         except:
                             continue
         return results
 
     def save_json(self, data, json_file):
+        
         with open(json_file, mode='w', encoding='utf-8') as j_file:
             json.dump(data, j_file)
 
     def save_data(self, data):
-        with open('result.json', mode='a', encoding='utf-8') as j_file:
+        with open('result.json', mode='w', encoding='utf-8') as j_file:
             json.dump(data, j_file)
         results = self.convert_dict_to_list(data)
-        headers = ['League', 'Match Day', 'Match Name', 'Team', 'Player Name', 'Player Link', 'Team Formation',
-                   'Team Link', 'Timestamp']
+        headers = ['Match Day', 'Team', 'Player Name', 'Player Link']
         # Saving result as csv
-        with open('result.csv', mode='a', encoding='utf-8', newline='') as csv_file:
+        with open('result.csv', mode='w', encoding='utf-8', newline='') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow(headers)
             writer.writerows(results)
